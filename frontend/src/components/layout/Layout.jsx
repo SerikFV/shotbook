@@ -7,7 +7,7 @@ import api from '../../services/api'
 import {
   Home, Calendar, BarChart2, MessageCircle,
   Bell, User, LogOut, Shield, Camera, Menu, X, Globe, Settings, Play,
-  Users, AlertTriangle, Activity, Send
+  Users, AlertTriangle, Activity, Send, Sparkles
 } from 'lucide-react'
 import './Layout.css'
 
@@ -102,16 +102,17 @@ export default function Layout() {
     setShowNotifs(v => !v)
   }
 
-  const regularNavItems = [
-    { to: '/explore', icon: Play, label: 'Explore (Лента)' },
-    { to: '/mobilographers', icon: Camera, label: t('mobilographers') },
-    { to: '/bookings', icon: Calendar, label: t('bookings') },
-    { to: '/messages', icon: MessageCircle, label: t('messages'), badge: unreadMessages },
-    ...(user?.role !== 'client' ? [
-      { to: '/calendar', icon: Calendar, label: t('calendar') },
-      { to: '/analytics', icon: BarChart2, label: t('analytics') },
-    ] : []),
-  ]
+    const regularNavItems = [
+      { to: '/explore', icon: Play, label: 'Explore (Лента)' },
+      { to: '/mobilographers', icon: Camera, label: t('mobilographers') },
+      { to: '/bookings', icon: Calendar, label: t('bookings') },
+      { to: '/messages', icon: MessageCircle, label: t('messages'), badge: unreadMessages },
+      ...(user?.role !== 'client' ? [
+        { to: '/calendar', icon: Calendar, label: t('calendar') },
+        { to: '/analytics', icon: BarChart2, label: t('analytics') },
+        { to: '/ideas', icon: Sparkles, label: '✨ AI Идеялар' },
+      ] : []),
+    ]
 
   const adminNavItems = [
     { to: '/admin?tab=dashboard', icon: Shield, label: 'Дашборд' },

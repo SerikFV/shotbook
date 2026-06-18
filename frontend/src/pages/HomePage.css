@@ -196,7 +196,7 @@
 .landing-page .bento-card {
   background: var(--bg-surface); border: 1px solid var(--border-light);
   border-radius: var(--radius-lg); padding: 40px; position: relative; overflow: hidden;
-  transition: var(--transition-smooth); display: flex; flexDirection: column;
+  transition: var(--transition-smooth); display: flex; flex-direction: column;
 }
 .landing-page .bento-card:hover {
   background: var(--bg-surface-hover); border-color: var(--border-highlight);
@@ -300,8 +300,8 @@
 .landing-page .faq-icon { transition: transform 0.3s; color: var(--text-secondary); }
 .landing-page .faq-item.active { border-color: rgba(139, 92, 246, 0.5); }
 .landing-page .faq-item.active .faq-icon { transform: rotate(180deg); color: var(--accent); }
-.landing-page .faq-body { padding: 0 24px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; color: var(--text-secondary); line-height: 1.6; }
-.landing-page .faq-item.active .faq-body { max-height: 200px; padding: 0 24px 24px; }
+.landing-page .faq-body { padding: 0 24px; max-height: 0; opacity: 0; overflow: hidden; transition: all 0.3s ease; color: var(--text-secondary); line-height: 1.6; }
+.landing-page .faq-item.active .faq-body { max-height: 300px; padding-bottom: 24px; opacity: 1; }
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {

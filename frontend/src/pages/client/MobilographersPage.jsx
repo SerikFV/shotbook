@@ -84,29 +84,27 @@ export default function MobilographersPage() {
   return (
     <div className="mobilographers-page fade-in">
       {/* Header */}
-      <div className="page-header">
-        <h1>{t('mobilographers')}</h1>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flex: 1, maxWidth: 600 }}>
-          <div className="search-bar" style={{ flex: 1 }}>
-            <Search size={16} color="var(--text-secondary)" />
-            <input className="search-input"
-              placeholder={t('search')}
-              value={filters.search}
-              onChange={e => setFilter('search', e.target.value)}
-            />
-          </div>
-          {activeTab === 'all' && (
-            <button
-              className={`btn ${showFilters || hasActiveFilters ? 'btn-primary' : 'btn-ghost'}`}
-              style={{ padding: '8px 14px', fontSize: 13, gap: 6, flexShrink: 0 }}
-              onClick={() => setShowFilters(v => !v)}>
-              <SlidersHorizontal size={15} />
-              {t('filter')}
-              {hasActiveFilters && <span style={{ background: 'rgba(255,255,255,0.25)', borderRadius: 10, padding: '0 6px', fontSize: 11 }}>
-                {[filters.minPrice, filters.maxPrice, filters.minRating, filters.minExperience, filters.specialization, filters.sortBy].filter(Boolean).length}
-              </span>}
-            </button>
-          )}
+      <div className="page-header" style={{flexDirection: 'column', alignItems: 'stretch', gap: 16}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+           <h1>{t('mobilographers')}</h1>
+           {activeTab === 'all' && (
+             <button
+               className={`btn ${showFilters || hasActiveFilters ? 'btn-primary' : 'btn-ghost'}`}
+               onClick={() => setShowFilters(!showFilters)}
+             >
+               <SlidersHorizontal size={16} />
+               <span className="hide-mobile">{t('filters')}</span>
+             </button>
+           )}
+        </div>
+        
+        <div className="search-bar" style={{ alignSelf: 'flex-start', minWidth: 300, marginTop: 10 }}>
+          <Search size={16} color="var(--text-secondary)" />
+          <input className="search-input"
+            placeholder={t('search')}
+            value={filters.search}
+            onChange={e => setFilter('search', e.target.value)}
+          />
         </div>
       </div>
 

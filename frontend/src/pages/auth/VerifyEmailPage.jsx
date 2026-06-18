@@ -119,10 +119,10 @@ export default function VerifyEmailPage() {
       <div className="auth-bg" />
       <div className="auth-card fade-in" style={{ maxWidth: 420 }}>
         {/* Лого */}
-        <div className="auth-logo">
+        <Link to="/" className="auth-logo" style={{ textDecoration: 'none', color: 'inherit' }}>
           <img src="/favicon.svg" alt="ShotBook" style={{ width: 48, height: 48, borderRadius: 12 }} />
           <h1>ShotBook</h1>
-        </div>
+        </Link>
 
         {success ? (
           /* Сәтті растауда */

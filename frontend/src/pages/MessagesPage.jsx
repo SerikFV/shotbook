@@ -56,7 +56,7 @@ export default function MessagesPage() {
               id: `group_${g.id}`,
               real_id: g.id,
               username: g.name,
-              avatar: '',
+              avatar: g.avatar || '',
               is_group: true,
               is_member: g.is_member,
               last_message: g.description,
@@ -321,7 +321,7 @@ export default function MessagesPage() {
               onClick={() => selectContact(c)}>
               <div style={{ position: 'relative' }}>
                 <div className="avatar" style={{ width: 40, height: 40, fontSize: 16, background: c.is_group ? 'var(--accent)' : 'var(--card2)', color: 'white' }}>
-                  {c.is_group ? <Users size={20} /> : (c.avatar
+                  {c.is_group ? (c.avatar ? <img src={c.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} /> : <Users size={20} />) : (c.avatar
                     ? <img src={c.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
                     : c.username[0].toUpperCase())}
                 </div>

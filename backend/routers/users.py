@@ -42,6 +42,7 @@ async def get_mobilographers(
         models.User.role == models.UserRole.mobilographer,
         models.User.is_active == True,
         models.User.is_banned == False,
+        models.User.is_email_verified == True,
     )
     if city:
         q = q.filter(models.User.city.ilike(f"%{city}%"))

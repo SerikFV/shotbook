@@ -11,3 +11,5 @@ cloudinary==1.38.0
 reportlab==4.1.0
 google-api-python-client==2.115.0
 google-auth-oauthlib==1.2.0
+
+httpx==0.26.0

@@ -32,10 +32,10 @@ export default function LoginPage() {
     <div className="auth-page">
       <div className="auth-bg" />
       <div className="auth-card fade-in">
-        <div className="auth-logo">
+        <Link to="/" className="auth-logo" style={{ textDecoration: 'none', color: 'inherit' }}>
           <img src="/favicon.svg" alt="ShotBook" style={{width:48,height:48,borderRadius:12}} />
           <h1>ShotBook</h1>
-        </div>
+        </Link>
         <h2 className="auth-title">{t('login')}</h2>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="field">

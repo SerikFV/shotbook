@@ -98,6 +98,21 @@ export default function ProfilePage() {
           headers: { 'Content-Type': 'multipart/form-data' }
         })
         newUrls.push(data.url)
+        
+        // AI Vision: analyze uploaded image/video cover
+        try {
+           const imageUrl = isVideo(data.url) ? data.url.replace(/\.[^/.]+$/, ".jpg") : data.url;
+           const aiRes = await api.post('/ai/analyze-image', { image_url: imageUrl });
+           if (aiRes.data.tags) {
+              if (window.confirm(`✨ AI суреттен мыналарды тапты: ${aiRes.data.tags}\nМамандықтар қатарына қосамыз ба?`)) {
+                 setForm(prev => ({ 
+                    ...prev, 
+                    specializations: prev.specializations ? prev.specializations + ', ' + aiRes.data.tags : aiRes.data.tags 
+                 }));
+              }
+           }
+        } catch (aiErr) { console.log('AI Vision error:', aiErr); }
+
       } catch (err) {
         toast.error(err.response?.data?.detail || `${file.name} жүктелмеді`)
       }
@@ -175,7 +190,18 @@ export default function ProfilePage() {
           {user?.role === 'mobilographer' && (
             <>
               <div className="field">
-                <label>{t('bio')}</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label>{t('bio')}</label>
+                  <button type="button" onClick={async () => {
+                    try {
+                      if (!form.bio.trim()) return toast.error('Мәтін жазыңыз!');
+                      const tId = toast.loading('AI жазуда...');
+                      const { data } = await api.post('/ai/enhance-text', { text: form.bio });
+                      setForm({ ...form, bio: data.enhanced_text });
+                      toast.success('Жақсартылды!', { id: tId });
+                    } catch { toast.error('Қате шықты'); }
+                  }} style={{ background: 'linear-gradient(to right, #8a2be2, #4b0082)', color: 'white', padding: '4px 12px', borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 'bold' }}>✨ AI-мен жақсарту</button>
+                </div>
                 <textarea className="input" rows={4} value={form.bio}
                   onChange={e => setForm({ ...form, bio: e.target.value })}
                   placeholder={t('bio')} style={{ resize: 'vertical' }} />

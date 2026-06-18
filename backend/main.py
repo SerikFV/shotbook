@@ -8,7 +8,7 @@ import os
 
 from database import engine, Base, get_db
 from routers import auth, users, bookings, messages, notifications, analytics, admin, availability, google_auth, group_chat
-from routers import favorites, delivery, media
+from routers import favorites, delivery, media, ai
 import models
 from websockets_manager import manager
 
@@ -40,6 +40,7 @@ app.include_router(favorites.router, prefix="/api/favorites", tags=["favorites"]
 app.include_router(delivery.router, prefix="/api/delivery", tags=["delivery"])
 app.include_router(google_auth.router, prefix="/api/google", tags=["google_auth"])
 app.include_router(media.router, prefix="/api/media", tags=["media"])
+app.include_router(ai.router, prefix="/api/ai", tags=["ai"])
 
 # WebSocket connection manager is now imported from websockets_manager
 

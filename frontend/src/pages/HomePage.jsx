@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
+import { useTranslation } from 'react-i18next'
 import api from '../services/api'
-import { Play, Star, ChevronRight, ChevronDown, Zap, Target, Layout, MessageSquare, Video } from 'lucide-react'
+import { Play, Star, ChevronRight, ChevronDown, Zap, Target, Layout, MessageSquare, Video, Globe } from 'lucide-react'
+import { homeTranslations, faqData } from '../locales/homeTranslations'
 import './HomePage.css'
 
 function CountUp({ end, suffix = '', duration = 2000 }) {
@@ -36,6 +38,10 @@ function CountUp({ end, suffix = '', duration = 2000 }) {
 }
 
 export default function HomePage() {
+  const { i18n } = useTranslation()
+  const lang = i18n.language || 'kk'
+  const t = (key) => homeTranslations[lang][key] || key
+  const faqs = faqData[lang] || faqData.kk
   const { user, logout } = useAuthStore()
   const [mobilographs, setMobilographs] = useState([])
   const [showMenu, setShowMenu] = useState(false)
@@ -94,8 +100,7 @@ export default function HomePage() {
       <nav className="navbar" id="navbar">
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Link to="/" className="nav-logo">
-            <div className="logo-icon">◈</div>
-            ShotBook
+            <img src="/favicon.svg" alt="ShotBook" style={{ width: 32, height: 32, borderRadius: 8 }} /> ShotBook
           </Link>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
@@ -104,10 +109,18 @@ export default function HomePage() {
               <li><Link to="/mobilographers">Мобилографтар</Link></li>
               <li><a href="#features">Мүмкіндіктер</a></li>
             </ul>
-            <div className="nav-actions">
+            <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <button 
+                className="btn-ghost" 
+                onClick={() => i18n.changeLanguage(lang === 'kk' ? 'ru' : 'kk')}
+                style={{ padding: '8px 12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
+              >
+                <Globe size={16} /> {lang === 'kk' ? 'RU' : 'KZ'}
+              </button>
+
               {user ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <Link to={user.role === 'client' ? '/mobilographers' : '/bookings'} className="btn-outline" style={{ padding: '8px 16px' }}>Дашборд</Link>
+                  <Link to={user.role === 'client' ? '/mobilographers' : '/bookings'} className="btn-outline" style={{ padding: '8px 16px' }}>{t('nav_dashboard')}</Link>
                   <div style={{ position: 'relative' }} ref={menuRef}>
                     <button onClick={() => setShowMenu(!showMenu)} style={{
                       display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.05)',
@@ -139,8 +152,8 @@ export default function HomePage() {
                 </div>
               ) : (
                 <>
-                  <Link to="/login" className="btn-ghost">Кіру</Link>
-                  <Link to="/register" className="btn-primary" style={{ padding: '10px 20px', fontSize: 14 }}>Тіркелу</Link>
+                  <Link to="/login" className="btn-ghost">{t('nav_login')}</Link>
+                  <Link to="/register" className="btn-primary" style={{ padding: '10px 20px', fontSize: 14 }}>{t('nav_register')}</Link>
                 </>
               )}
             </div>
@@ -154,23 +167,23 @@ export default function HomePage() {
         <div className="hero-content reveal">
           <div className="hero-badge">
             <span className="badge-indicator"></span>
-            Жаңа буын мобилографтар платформасы
+            {t('hero_badge')}
           </div>
-          <h1 className="hero-title">
-            Өз өнеріңді <br />
-            <span className="gradient-text">әлемге паш ет</span>
+          <h1 className="hero-title" style={{ fontFamily: 'Inter, sans-serif' }}>
+            {t('hero_title_1')} <br />
+            <span className="gradient-text">{t('hero_title_2')}</span>
           </h1>
           <p className="hero-subtitle">
-            ShotBook — мобилографтар мен клиенттерді байланыстыратын премиум экожүйе. Портфолио жинап, тапсырыстарды автоматтандырыңыз.
+            {t('hero_desc')}
           </p>
           <div className="hero-actions">
             {!user && (
               <Link to="/register" className="btn-primary">
-                Тегін бастау <ChevronRight size={18} />
+                {t('nav_register')} <ChevronRight size={18} />
               </Link>
             )}
             <Link to="/mobilographers" className="btn-outline">
-              <Play size={18} /> Платформаны көру
+              <Play size={18} /> {t('hero_btn')}
             </Link>
           </div>
         </div>
@@ -181,11 +194,11 @@ export default function HomePage() {
           {[...Array(10)].map((_, i) => (
             <div className="marquee-item" key={i}>
               <Star size={16} className="marquee-star" fill="currentColor" />
-              1000+ Табысты заказ
+              {t('marquee_1')}
               <Star size={16} className="marquee-star" fill="currentColor" />
-              Үздік портфолио
+              {t('marquee_2')}
               <Star size={16} className="marquee-star" fill="currentColor" />
-              Қазақстандағы #1 Платформа
+              {t('marquee_3')}
             </div>
           ))}
         </div>
@@ -200,11 +213,11 @@ export default function HomePage() {
             </div>
             <div className="stat-item">
               <h3><CountUp end={12000} suffix="+" /></h3>
-              <p>Тапсырыс</p>
+              <p>{t('stat_orders')}</p>
             </div>
             <div className="stat-item">
               <h3><CountUp end={98} suffix="%" /></h3>
-              <p>Клиент ризашылығы</p>
+              <p>{t('stat_satisfaction')}</p>
             </div>
           </div>
         </div>
@@ -213,62 +226,42 @@ export default function HomePage() {
       <section className="features-section" id="features">
         <div className="container">
           <div className="section-header reveal">
-            <span className="section-label">Жүйе Мүмкіндіктері</span>
-            <h2 className="section-title">Барлық құрал бір жерде</h2>
-            <p className="section-desc">Жұмысыңызды жеңілдету үшін керектінің бәрін біріктірдік. Заманауи интерфейс және жылдам жүйе.</p>
+            <span className="section-label">{t('feat_label')}</span>
+            <h2 className="section-title">{t('feat_title')}</h2>
+            <p className="section-desc">{t('feat_desc')}</p>
           </div>
 
           <div className="bento-grid">
             <div className="bento-card bento-large reveal">
               <div className="bento-icon"><Layout size={24} /></div>
-              <h3>Премиум Портфолио</h3>
-              <p>Видеоларыңыз бен суреттеріңізді TikTok/Reels форматындағы динамикалық лентада көрсетіңіз. Нақты лайк, пікір және сақтау статистикасы.</p>
+              <h3>{t('feat_1_title')}</h3>
+              <p>{t('feat_1_desc')}</p>
             </div>
             <div className="bento-card reveal delay-1">
               <div className="bento-icon"><Zap size={24} color="#f59e0b" /></div>
-              <h3>Жылдам Брондау</h3>
-              <p>Бос күндеріңізді күнтізбе арқылы басқарыңыз. Клиенттер онлайн тапсырыс береді.</p>
+              <h3>{t('feat_2_title')}</h3>
+              <p>{t('feat_2_desc')}</p>
             </div>
             <div className="bento-card reveal">
               <div className="bento-icon"><MessageSquare size={24} color="#3b82f6" /></div>
-              <h3>Тікелей Чат</h3>
-              <p>Тапсырыс детальдарын клиентпен тікелей платформа ішінде талқылаңыз.</p>
+              <h3>{t('feat_3_title')}</h3>
+              <p>{t('feat_3_desc')}</p>
             </div>
             <div className="bento-card bento-large reveal delay-1">
               <div className="bento-icon"><Target size={24} color="#10b981" /></div>
-              <h3>Рейтинг & Сенім</h3>
-              <p>Жасалған жұмыстардан кейін клиенттерден пікір жинап, платформа ішіндегі өз рейтингіңізді (Топ мобилограф) өсіріңіз.</p>
+              <h3>{t('feat_4_title')}</h3>
+              <p>{t('feat_4_desc')}</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="reels-section">
-        <div className="container">
-          <div className="section-header reveal">
-            <h2 className="section-title">Жаңа жұмыстар</h2>
-            <p className="section-desc">Платформадағы ең соңғы және үздік видеолар топтамасы.</p>
-          </div>
-        </div>
-        <div className="reels-track reveal delay-1">
-          {[1,2,3,4,5,6].map(i => (
-            <div className="reel-card" key={i}>
-              <video className="reel-video" src={`https://res.cloudinary.com/demo/video/upload/v1689243750/samples/elephants.mp4`} muted loop playsInline onMouseEnter={e => e.target.play()} onMouseLeave={e => {e.target.pause(); e.target.currentTime=0}} />
-              <div className="reel-overlay"></div>
-              <div className="reel-author">
-                <div className="reel-avatar">M</div>
-                <span className="reel-name">Mobilograph {i}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       <section className="mob-showcase">
         <div className="container">
           <div className="section-header reveal">
-            <h2 className="section-title">Үздік Мобилографтар</h2>
-            <p className="section-desc">Платформамыздың ең талантты резиденттерімен танысыңыз.</p>
+            <h2 className="section-title">{t('mob_title')}</h2>
+            <p className="section-desc">{t('mob_desc')}</p>
           </div>
 
           <div className="mob-grid">
@@ -283,9 +276,9 @@ export default function HomePage() {
                   </div>
                   <div className="mob-body">
                     <h3 className="mob-name">{mob.username}</h3>
-                    <p className="mob-spec">{p.specializations || 'Жалпы бағыт'}</p>
+                    <p className="mob-spec">{p.specializations || t('mob_spec_default')}</p>
                     <div className="mob-footer">
-                      <span className="mob-price">{p.hourly_price ? `${p.hourly_price.toLocaleString()} ₸/сағ` : 'Бағасыз'}</span>
+                      <span className="mob-price">{p.hourly_price ? `${p.hourly_price.toLocaleString()} ${t('mob_price_hour')}` : t('mob_price_none')}</span>
                       <ChevronRight size={20} color="var(--text-secondary)" />
                     </div>
                   </div>
@@ -295,48 +288,22 @@ export default function HomePage() {
           </div>
 
           <div style={{ textAlign: 'center' }} className="reveal">
-            <Link to="/mobilographers" className="btn-outline">Барлығын көру</Link>
+            <Link to="/mobilographers" className="btn-outline">{t('mob_btn')}</Link>
           </div>
         </div>
       </section>
 
-      <section className="testimonials-section">
-        <div className="container">
-          <div className="section-header reveal">
-            <h2 className="section-title">Клиенттер пікірі</h2>
-            <p className="section-desc">Біздің платформамыз арқылы мобилограф тапқан клиенттердің лебіздері.</p>
-          </div>
-        </div>
-        <div className="testimonials-grid reveal delay-1">
-          {[1, 2, 3, 4, 5].map((item) => (
-            <div className="testimonial-card" key={item}>
-              <div className="stars">{[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}</div>
-              <p className="testimonial-text">"Шотбук арқылы мобилографты өте тез таптым! Портфолиолары да бірден көрініп тұрады, өте ыңғайлы платформа."</p>
-              <div className="testimonial-author">
-                <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#3b82f6' }}></div>
-                <div className="testimonial-author-info">
-                  <h4>Айгерім {item}</h4>
-                  <p>Клиент</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+
 
       <section className="faq-section">
         <div className="container">
           <div className="section-header reveal">
-            <h2 className="section-title">Жиі қойылатын сұрақтар</h2>
-            <p className="section-desc">Платформаны қолдану бойынша сұрақтарыңыз болса, осы жерден жауап таба аласыз.</p>
+            <h2 className="section-title">{t('faq_title')}</h2>
+            <p className="section-desc">{t('faq_desc')}</p>
           </div>
           <div className="faq-container">
-            {[
-              { q: 'Мобилографты қалай брондаймын?', a: 'Мобилографтың профиліне кіріп, күнтізбесінен бос уақытты таңдап, бронь жібересіз.' },
-              { q: 'Платформаға тіркелу ақылы ма?', a: 'Жоқ, клиенттер үшін де, мобилографтар үшін де тіркелу тегін.' },
-              { q: 'Жұмыс сапасына кепілдік бар ма?', a: 'Біздегі әр мобилографтың нақты пікірлері мен рейтингі бар. Соларға қарап таңдай аласыз.' },
-            ].map((faq, idx) => (
-              <div key={idx} className={`faq-item reveal delay-${idx % 2} ${activeFaq === idx ? 'active' : ''}`}>
+            {faqs.map((faq, idx) => (
+              <div key={idx} className={`faq-item ${activeFaq === idx ? 'active' : ''}`}>
                 <div className="faq-header" onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}>
                   {faq.q} <ChevronDown size={20} className="faq-icon" />
                 </div>
@@ -347,47 +314,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="cta">
-        <div className="container">
-          <div className="cta-box reveal">
-            <h2>Өз жолыңды бүгіннен баста</h2>
-            <p>Мыңдаған клиенттер сенің стиліңді іздеп жүр. Тіркел, портфолиоңды толтыр және табыс тап.</p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 16 }}>
-              <Link to="/register" className="btn-primary">Шотбукқа қосылу</Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <footer className="footer">
         <div className="container">
           <div className="footer-grid">
             <div className="footer-col">
               <Link to="/" className="nav-logo" style={{ marginBottom: 16 }}>
-                <div className="logo-icon">◈</div> ShotBook
+                <img src="/favicon.svg" alt="ShotBook" style={{ width: 32, height: 32, borderRadius: 8 }} /> ShotBook
               </Link>
-              <p className="footer-desc">Қазақстандағы ең креативті мобилографтар мен клиенттер экожүйесі. Өз өнеріңді әлемге паш ет.</p>
+              <p className="footer-desc">{t('footer_desc')}</p>
             </div>
             <div className="footer-col">
-              <h4>Платформа</h4>
+              <h4>{t('footer_platform')}</h4>
               <ul>
-                <li><Link to="/mobilographers">Мобилографтарды іздеу</Link></li>
-                <li><Link to="/register">Мобилограф болып тіркелу</Link></li>
+                <li><Link to="/mobilographers">{t('footer_search')}</Link></li>
+                <li><Link to="/register">{t('footer_reg')}</Link></li>
               </ul>
             </div>
             <div className="footer-col">
-              <h4>Компания</h4>
+              <h4>{t('footer_company')}</h4>
               <ul>
-                <li><a href="#">Біз туралы</a></li>
-                <li><a href="#">Құпиялылық саясаты</a></li>
-                <li><a href="#">Келісім шарттар</a></li>
+                <li><a href="#">{t('footer_about')}</a></li>
+                <li><a href="#">{t('footer_privacy')}</a></li>
+                <li><a href="#">{t('footer_terms')}</a></li>
               </ul>
             </div>
           </div>
           <div className="footer-bottom">
-            <span>© 2026 ShotBook Technologies. Барлық құқықтар қорғалған.</span>
+            <span>© 2026 {t('footer_rights')}</span>
             <div style={{ display: 'flex', gap: 16 }}>
-              <span>🇰🇿 Қазақстан</span>
+              <span>🇰🇿 {t('footer_country')}</span>
             </div>
           </div>
         </div>

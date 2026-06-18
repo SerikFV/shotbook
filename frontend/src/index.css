@@ -195,3 +195,29 @@ input, textarea, select {
 .react-calendar__navigation button { color: var(--text) !important; }
 .react-calendar__navigation button:enabled:hover { background: var(--card2) !important; border-radius: 8px !important; }
 .react-calendar__month-view__days__day--weekend { color: var(--accent) !important; }
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border);
+}

@@ -104,10 +104,29 @@ async def register(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
-    if db.query(models.User).filter(models.User.email == req.email).first():
-        raise HTTPException(status_code=400, detail="Email already registered")
-    if db.query(models.User).filter(models.User.username == req.username).first():
-        raise HTTPException(status_code=400, detail="Username already taken")
+    existing_user_email = db.query(models.User).filter(models.User.email == req.email).first()
+    if existing_user_email:
+        if existing_user_email.is_email_verified:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        else:
+            if existing_user_email.role == models.UserRole.mobilographer:
+                db.query(models.MobilographerProfile).filter(models.MobilographerProfile.user_id == existing_user_email.id).delete()
+            db.query(models.ActivityLog).filter(models.ActivityLog.user_id == existing_user_email.id).delete()
+            db.query(models.EmailVerification).filter(models.EmailVerification.user_id == existing_user_email.id).delete()
+            db.delete(existing_user_email)
+            db.commit()
+
+    existing_user_username = db.query(models.User).filter(models.User.username == req.username).first()
+    if existing_user_username:
+        if existing_user_username.is_email_verified:
+            raise HTTPException(status_code=400, detail="Username already taken")
+        else:
+            if existing_user_username.role == models.UserRole.mobilographer:
+                db.query(models.MobilographerProfile).filter(models.MobilographerProfile.user_id == existing_user_username.id).delete()
+            db.query(models.ActivityLog).filter(models.ActivityLog.user_id == existing_user_username.id).delete()
+            db.query(models.EmailVerification).filter(models.EmailVerification.user_id == existing_user_username.id).delete()
+            db.delete(existing_user_username)
+            db.commit()
 
     role = models.UserRole(req.role) if req.role in ["client", "mobilographer"] else models.UserRole.client
 

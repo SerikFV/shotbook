@@ -15,6 +15,7 @@ import BookingsPage from './pages/BookingsPage'
 import MessagesPage from './pages/MessagesPage'
 import CalendarPage from './pages/mobilographer/CalendarPage'
 import AnalyticsPage from './pages/mobilographer/AnalyticsPage'
+import AiIdeasPage from './pages/mobilographer/AiIdeasPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
 import AdminPage from './pages/admin/AdminPage'
@@ -78,8 +79,13 @@ export default function App() {
           <Route path="bookings" element={<BookingsPage />} />
           <Route path="messages" element={<MessagesPage />} />
           <Route path="messages/:userId" element={<MessagesPage />} />
-          <Route path="calendar" element={<PrivateRoute roles={['mobilographer','admin']}><CalendarPage /></PrivateRoute>} />
-          <Route path="analytics" element={<PrivateRoute roles={['mobilographer','admin']}><AnalyticsPage /></PrivateRoute>} />
+          {user?.role === 'mobilographer' && (
+            <>
+              <Route path="calendar" element={<CalendarPage />} />
+              <Route path="analytics" element={<AnalyticsPage />} />
+              <Route path="ideas" element={<AiIdeasPage />} />
+            </>
+          )}
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="admin" element={<PrivateRoute roles={['admin']}><AdminPage /></PrivateRoute>} />

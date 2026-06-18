@@ -138,10 +138,10 @@ export default function ForgotPasswordPage() {
       <div className="auth-card fade-in" style={{ maxWidth: 400 }}>
 
         {/* Лого */}
-        <div className="auth-logo">
+        <Link to="/" className="auth-logo" style={{ textDecoration: 'none', color: 'inherit' }}>
           <img src="/favicon.svg" alt="ShotBook" style={{ width: 48, height: 48, borderRadius: 12 }} />
           <h1>ShotBook</h1>
-        </div>
+        </Link>
 
         {/* Прогресс индикатор */}
         <div style={{ display: 'flex', gap: 6, marginBottom: 28 }}>
