@@ -1,0 +1,98 @@
+.mobilographers-page { display: flex; flex-direction: column; gap: 24px; }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.page-header h1 { font-size: 24px; font-weight: 700; }
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+  min-width: 260px;
+}
+.search-input {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 14px;
+  flex: 1;
+  min-width: 0;
+}
+.search-input::placeholder { color: var(--text-secondary); }
+
+.mob-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.mob-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+.mob-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+.mob-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.mob-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.mob-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+
+.mob-city {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.mob-bio { color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+
+.mob-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.mob-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.mob-price {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 15px;
+}
+
+.mob-action { margin-top: auto; }
