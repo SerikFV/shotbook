@@ -364,14 +364,48 @@ export default function MessagesPage() {
         ) : (
           <>
             {/* Chat header */}
-            <div className="chat-header" style={{ cursor: selectedUser.is_group && user?.role === 'admin' ? 'pointer' : 'default' }} onClick={() => { if (selectedUser.is_group && user?.role === 'admin') { setGroupNameInput(selectedUser.username); setShowGroupSettings(true) } }}>
-              <div className="avatar" style={{ width: 38, height: 38, fontSize: 14, background: selectedUser.is_group ? 'var(--accent)' : 'var(--card2)', color: 'white' }}>
+            <div className="chat-header">
+              <div 
+                className="avatar" 
+                style={{ 
+                  width: 38, 
+                  height: 38, 
+                  fontSize: 14, 
+                  background: selectedUser.is_group ? 'var(--accent)' : 'var(--card2)', 
+                  color: 'white',
+                  cursor: !selectedUser.is_group && selectedUser.role === 'mobilographer' ? 'pointer' : (selectedUser.is_group && user?.role === 'admin' ? 'pointer' : 'default')
+                }}
+                onClick={() => {
+                  if (!selectedUser.is_group && selectedUser.role === 'mobilographer') {
+                    navigate(`/mobilographers/${selectedUser.id}`)
+                  } else if (selectedUser.is_group && user?.role === 'admin') {
+                    setGroupNameInput(selectedUser.username)
+                    setShowGroupSettings(true)
+                  }
+                }}
+              >
                 {selectedUser.is_group ? (selectedUser.avatar ? <img src={selectedUser.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} /> : <Users size={18} />) : (selectedUser.avatar
                   ? <img src={selectedUser.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
                   : selectedUser.username[0].toUpperCase())}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div 
+                  style={{ 
+                    fontWeight: 600, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 6,
+                    cursor: !selectedUser.is_group && selectedUser.role === 'mobilographer' ? 'pointer' : (selectedUser.is_group && user?.role === 'admin' ? 'pointer' : 'default')
+                  }}
+                  onClick={() => {
+                    if (!selectedUser.is_group && selectedUser.role === 'mobilographer') {
+                      navigate(`/mobilographers/${selectedUser.id}`)
+                    } else if (selectedUser.is_group && user?.role === 'admin') {
+                      setGroupNameInput(selectedUser.username)
+                      setShowGroupSettings(true)
+                    }
+                  }}
+                >
                    {selectedUser.username}
                    {selectedUser.is_group && user?.role === 'admin' && <Settings size={14} color="var(--text-secondary)" />}
                 </div>

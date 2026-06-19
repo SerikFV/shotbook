@@ -1,0 +1,166 @@
+erDiagram
+    USERS {
+        int id PK
+        string username UNIQUE
+        string email UNIQUE
+        string password_hash
+        string role "client, mobilographer, admin"
+        string phone
+        string city
+        string avatar
+        boolean is_active
+        boolean is_banned
+        boolean is_email_verified
+        timestamp created_at
+    }
+
+    MOBILOGRAPHER_PROFILES {
+        int id PK
+        int user_id FK "UNIQUE"
+        text bio
+        int experience
+        float hourly_price
+        float rating
+        int total_reviews
+        text specializations
+        text portfolio_urls
+        text social_links "JSON string"
+        text packages "JSON string"
+    }
+
+    BOOKINGS {
+        int id PK
+        int client_id FK
+        int mobilographer_id FK
+        timestamp booking_date
+        string start_time
+        string end_time
+        string location
+        string shoot_type
+        text notes
+        string status "new, confirmed, shooting, editing, completed, cancelled"
+        float total_price
+        string contract_url
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    MESSAGES {
+        int id PK
+        int sender_id FK
+        int receiver_id FK
+        text message
+        boolean is_read
+        boolean deleted_for_sender
+        boolean deleted_for_receiver
+        boolean deleted_for_all
+        timestamp created_at
+    }
+
+    NOTIFICATIONS {
+        int id PK
+        int user_id FK
+        string title
+        text message
+        string notification_type
+        boolean is_read
+        timestamp created_at
+    }
+
+    REPORTS {
+        int id PK
+        int reporter_id FK
+        int target_user_id FK
+        text reason
+        string status "pending, resolved"
+        timestamp created_at
+    }
+
+    AVAILABILITY {
+        int id PK
+        int mobilographer_id FK
+        string date
+        string start_time
+        string end_time
+        boolean is_blocked
+        timestamp created_at
+    }
+
+    REVIEWS {
+        int id PK
+        int booking_id FK "UNIQUE"
+        int client_id FK
+        int mobilographer_id FK
+        int rating "1 to 5"
+        text comment
+        timestamp created_at
+    }
+
+    BOOKING_DELIVERIES {
+        int id PK
+        int booking_id FK
+        string file_url
+        string file_name
+        timestamp uploaded_at
+    }
+
+    EMAIL_VERIFICATIONS {
+        int id PK
+        int user_id FK
+        string code "6 chars"
+        string purpose "register, forgot, change_email"
+        boolean is_used
+        timestamp expires_at
+        timestamp created_at
+    }
+
+    GROUP_ROOMS {
+        int id PK
+        string name
+        text description
+        string avatar
+        int created_by FK
+        boolean is_public
+        timestamp created_at
+    }
+
+    GROUP_ROOM_MEMBERS {
+        int id PK
+        int room_id FK
+        int user_id FK
+        boolean is_admin
+        timestamp joined_at
+    }
+
+    GROUP_MESSAGES {
+        int id PK
+        int room_id FK
+        int sender_id FK
+        text message
+        boolean is_pinned
+        int pinned_by FK
+        boolean deleted_for_all
+        timestamp created_at
+    }
+
+    %% Relationship Rules
+    USERS ||--o| MOBILOGRAPHER_PROFILES : "has profile"
+    USERS ||--o{ BOOKINGS : "makes client bookings"
+    USERS ||--o{ BOOKINGS : "receives mobilographer bookings"
+    USERS ||--o{ MESSAGES : "sends messages"
+    USERS ||--o{ MESSAGES : "receives messages"
+    USERS ||--o{ NOTIFICATIONS : "gets notifications"
+    USERS ||--o{ REPORTS : "files reports"
+    USERS ||--o{ REPORTS : "receives reports"
+    USERS ||--o{ AVAILABILITY : "sets availability"
+    USERS ||--o{ REVIEWS : "writes reviews"
+    USERS ||--o{ REVIEWS : "receives reviews"
+    USERS ||--o{ EMAIL_VERIFICATIONS : "requests verification"
+    
+    BOOKINGS ||--o| REVIEWS : "reviewed by"
+    BOOKINGS ||--o{ BOOKING_DELIVERIES : "has delivery files"
+    
+    GROUP_ROOMS ||--o{ GROUP_ROOM_MEMBERS : "has members"
+    GROUP_ROOMS ||--o{ GROUP_MESSAGES : "contains messages"
+    USERS ||--o{ GROUP_ROOM_MEMBERS : "joined as member"
+    USERS ||--o{ GROUP_MESSAGES : "sends group message"

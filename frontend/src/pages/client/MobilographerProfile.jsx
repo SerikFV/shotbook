@@ -16,7 +16,7 @@ import 'react-calendar/dist/Calendar.css'
 import ReelsModal from '../../components/ui/ReelsModal'
 const SHOOT_TYPES = ['Свадьба / Үйлену тойы', 'Портрет', 'Репортаж', 'Коммерциялық', 'Тұсаукесер', 'Туған күн', 'Басқа']
 const VIDEO_EXTS = new Set(['mp4','mov','avi','webm','mkv','flv','wmv','m4v','3gp','ts'])
-const isVid = (url) => VIDEO_EXTS.has((url||'').split('.').pop().toLowerCase())
+const isVid = (url) => VIDEO_EXTS.has((url || '').split('?')[0].split('.').pop().toLowerCase())
 
 // Әлеуметтік желі конфигурациясы
 const SOCIAL_CONFIG = {
@@ -262,6 +262,12 @@ export default function MobilographerProfile() {
 
   const packages = (() => { try { return JSON.parse(mob.profile?.packages || '[]') } catch { return [] } })()
   const socialLinks = (() => { try { return JSON.parse(mob.profile?.social_links || '{}') } catch { return {} } })()
+  const getRotationFromUrl = (url) => {
+    if (!url) return 0
+    const match = url.match(/[?&]rot=(\d+)/)
+    return match ? parseInt(match[1], 10) : 0
+  }
+
   const portfolioUrls = (mob.profile?.portfolio_urls || '').split('\n').map(u => u.trim()).filter(Boolean)
   const videoUrls = portfolioUrls.filter(u => isVid(u))
   const photoUrls = portfolioUrls.filter(u => !isVid(u))
@@ -454,13 +460,21 @@ export default function MobilographerProfile() {
                         }
                       }}
                     >
-                      {isVid(url) ? (
-                        <video src={url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} preload="metadata" />
-                      ) : (
-                        <img src={url} alt={`portfolio-${i + 1}`}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          onError={e => { e.target.style.display = 'none' }} />
-                      )}
+                      {(() => {
+                        const rotation = getRotationFromUrl(url)
+                        const transformStyle = rotation ? `rotate(${rotation}deg)` : undefined
+                        return isVid(url) ? (
+                          <div style={{ width: '100%', height: '100%', transform: transformStyle }}>
+                            <video src={url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} preload="metadata" />
+                          </div>
+                        ) : (
+                          <div style={{ width: '100%', height: '100%', transform: transformStyle }}>
+                            <img src={url} alt={`portfolio-${i + 1}`}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              onError={e => { e.target.style.display = 'none' }} />
+                          </div>
+                        )
+                      })()}
                       {isVid(url) && (
                         <div style={{ position: 'absolute', top: 6, left: 6, background: 'rgba(0,0,0,0.65)', borderRadius: 6, padding: '2px 8px', fontSize: 11, color: 'white' }}>▶ Видео</div>
                       )}

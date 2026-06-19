@@ -131,7 +131,8 @@ def explore_media(db: Session = Depends(get_db)):
             
         urls = [url.strip() for url in p.portfolio_urls.split('\n') if url.strip()]
         for url in urls:
-            if 'video' in url or url.endswith('.mp4') or url.endswith('.mov') or 'cloudinary' in url:
+            clean_url = url.split('?')[0]
+            if 'video' in clean_url or clean_url.endswith('.mp4') or clean_url.endswith('.mov') or 'cloudinary' in clean_url:
                 all_reels.append({
                     "url": url,
                     "author": {

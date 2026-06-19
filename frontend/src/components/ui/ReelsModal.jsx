@@ -5,9 +5,15 @@ import api from '../../services/api'
 import toast from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
 
+const getRotationFromUrl = (url) => {
+  if (!url) return 0
+  const match = url.match(/[?&]rot=(\d+)/)
+  return match ? parseInt(match[1], 10) : 0
+}
+
 export default function ReelsModal({ urls, initialIndex, onClose }) {
   const [activeIdx, setActiveIdx] = useState(initialIndex)
-  const [isMuted, setIsMuted] = useState(false)
+  const [isMuted, setIsMuted] = useState(true)
   const [shareData, setShareData] = useState(null)
   const [commentsData, setCommentsData] = useState(null)
   const containerRef = useRef(null)
@@ -179,65 +185,87 @@ function ReelItem({ url, isActive, isMuted, onShare, onComment }) {
     return num
   }
 
+  const rotation = getRotationFromUrl(url)
+  const isRotatedLandscape = rotation === 90 || rotation === 270
+
   return (
     <div style={{
       width: '100%', height: '100vh', scrollSnapAlign: 'start',
       position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
       background: '#111'
     }}>
-      <video
-        ref={videoRef}
-        src={url}
-        muted={isMuted}
-        loop
-        playsInline
-        onClick={togglePlay}
-        style={{
-          width: '100%', height: '100%', objectFit: 'contain', cursor: 'pointer'
-        }}
-      />
-      
-      {!isPlaying && (
-        <div style={{
-          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-          width: 80, height: 80, borderRadius: '50%', background: 'rgba(0,0,0,0.5)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none',
-          color: 'white'
-        }}>
-          <Play size={36} fill="white" style={{ marginLeft: 6 }} />
-        </div>
-      )}
-
-      {/* Оң жақ панель */}
       <div style={{
-        position: 'absolute', right: 16, bottom: 80, display: 'flex', flexDirection: 'column', gap: 24, zIndex: 5
+        width: '100%', height: '100%', maxWidth: '500px',
+        transform: rotation ? `rotate(${rotation}deg)` : undefined,
+        display: 'flex', alignItems: 'center', justifyContent: 'center'
       }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: 'white' }}>
-          <button onClick={handleLike} style={{ width: 50, height: 50, borderRadius: '50%', background: 'rgba(0,0,0,0.4)', border: 'none', color: isLiked ? '#ef4444' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'all 0.2s', transform: isLiked ? 'scale(1.1)' : 'scale(1)' }}>
-            <Heart size={26} fill={isLiked ? '#ef4444' : 'none'} />
-          </button>
-          <span style={{ fontSize: 13, fontWeight: 600, textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{formatNumber(likes)}</span>
-        </div>
+        <video
+          ref={videoRef}
+          src={url}
+          muted={isMuted}
+          loop
+          playsInline
+          onClick={togglePlay}
+          style={{
+            width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer'
+          }}
+        />
+      </div>
+      
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '100%',
+        maxWidth: isRotatedLandscape ? '100vh' : '500px',
+        pointerEvents: 'none',
+        zIndex: 5
+      }}>
+        {!isPlaying && (
+          <div style={{
+            position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+            width: 80, height: 80, borderRadius: '50%', background: 'rgba(0,0,0,0.5)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none',
+            color: 'white'
+          }}>
+            <Play size={36} fill="white" style={{ marginLeft: 6 }} />
+          </div>
+        )}
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: 'white' }}>
-          <button onClick={(e) => { e.stopPropagation(); onComment(url) }} style={{ width: 50, height: 50, borderRadius: '50%', background: 'rgba(0,0,0,0.4)', border: 'none', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'all 0.2s' }}>
-            <MessageCircle size={26} fill="white" stroke="black" strokeWidth={0.5} />
-          </button>
-          <span style={{ fontSize: 13, fontWeight: 600, textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{formatNumber(comments)}</span>
-        </div>
+        {/* Оң жақ панель */}
+        <div style={{
+          position: 'absolute', right: 16, bottom: 80, display: 'flex', flexDirection: 'column', gap: 24,
+          pointerEvents: 'auto'
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: 'white' }}>
+            <button onClick={handleLike} style={{ width: 50, height: 50, borderRadius: '50%', background: 'rgba(0,0,0,0.4)', border: 'none', color: isLiked ? '#ef4444' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'all 0.2s', transform: isLiked ? 'scale(1.1)' : 'scale(1)' }}>
+              <Heart size={26} fill={isLiked ? '#ef4444' : 'none'} />
+            </button>
+            <span style={{ fontSize: 13, fontWeight: 600, textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{formatNumber(likes)}</span>
+          </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: 'white' }}>
-          <button onClick={handleSave} style={{ width: 50, height: 50, borderRadius: '50%', background: 'rgba(0,0,0,0.4)', border: 'none', color: isSaved ? '#eab308' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'all 0.2s' }}>
-            <Bookmark size={26} fill={isSaved ? '#eab308' : 'none'} />
-          </button>
-          <span style={{ fontSize: 13, fontWeight: 600, textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{formatNumber(saves)}</span>
-        </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: 'white' }}>
+            <button onClick={(e) => { e.stopPropagation(); onComment(url) }} style={{ width: 50, height: 50, borderRadius: '50%', background: 'rgba(0,0,0,0.4)', border: 'none', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'all 0.2s' }}>
+              <MessageCircle size={26} fill="white" stroke="black" strokeWidth={0.5} />
+            </button>
+            <span style={{ fontSize: 13, fontWeight: 600, textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{formatNumber(comments)}</span>
+          </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: 'white' }}>
-          <button onClick={(e) => { e.stopPropagation(); onShare(url) }} style={{ width: 50, height: 50, borderRadius: '50%', background: 'rgba(0,0,0,0.4)', border: 'none', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'all 0.2s' }}>
-            <Share2 size={26} fill="white" stroke="black" strokeWidth={0.5} />
-          </button>
-          <span style={{ fontSize: 13, fontWeight: 600, textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>Share</span>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: 'white' }}>
+            <button onClick={handleSave} style={{ width: 50, height: 50, borderRadius: '50%', background: 'rgba(0,0,0,0.4)', border: 'none', color: isSaved ? '#eab308' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'all 0.2s' }}>
+              <Bookmark size={26} fill={isSaved ? '#eab308' : 'none'} />
+            </button>
+            <span style={{ fontSize: 13, fontWeight: 600, textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{formatNumber(saves)}</span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: 'white' }}>
+            <button onClick={(e) => { e.stopPropagation(); onShare(url) }} style={{ width: 50, height: 50, borderRadius: '50%', background: 'rgba(0,0,0,0.4)', border: 'none', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'all 0.2s' }}>
+              <Share2 size={26} fill="white" stroke="black" strokeWidth={0.5} />
+            </button>
+            <span style={{ fontSize: 13, fontWeight: 600, textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>Share</span>
+          </div>
         </div>
       </div>
     </div>

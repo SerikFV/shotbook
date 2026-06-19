@@ -4,6 +4,12 @@ import { Heart, MessageCircle, Bookmark, Share2, ArrowLeft, Calendar } from 'luc
 import api from '../services/api'
 import './ExplorePage.css'
 
+const getRotationFromUrl = (url) => {
+  if (!url) return 0
+  const match = url.match(/[?&]rot=(\d+)/)
+  return match ? parseInt(match[1], 10) : 0
+}
+
 function ReelPlayer({ reel, isActive }) {
   const videoRef = useRef(null)
   const navigate = useNavigate()
@@ -50,19 +56,28 @@ function ReelPlayer({ reel, isActive }) {
     } catch (e) { alert('Сақтау үшін жүйеге кіріңіз!') }
   }
 
+  const rotation = getRotationFromUrl(reel.url)
+  const isRotatedLandscape = rotation === 90 || rotation === 270
+
   return (
     <div className="reel-container">
-      <video 
-        ref={videoRef}
-        className="reel-video-player"
-        src={reel.url}
-        loop
-        playsInline
-        muted={false}
-        onClick={togglePlay}
-      />
+      <div style={{
+        width: '100%', height: '100%', maxWidth: '500px',
+        transform: rotation ? `rotate(${rotation}deg)` : undefined,
+        display: 'flex', alignItems: 'center', justifyContent: 'center'
+      }}>
+        <video 
+          ref={videoRef}
+          className="reel-video-player"
+          src={reel.url}
+          loop
+          playsInline
+          muted={false}
+          onClick={togglePlay}
+        />
+      </div>
       
-      <div className="reel-ui">
+      <div className="reel-ui" style={{ maxWidth: isRotatedLandscape ? '100vh' : '500px' }}>
         <div className="reel-header">
           <button className="back-btn" onClick={() => navigate(-1)}>
             <ArrowLeft size={24} />
@@ -74,7 +89,6 @@ function ReelPlayer({ reel, isActive }) {
             <div className="reel-author-name" onClick={() => navigate(`/mobilographers/${reel.author.id}`)}>
               {reel.author.username}
             </div>
-            <p className="reel-desc">{reel.description}</p>
             <button className="book-btn" onClick={() => navigate(`/mobilographers/${reel.author.id}?book=true`)}>
               <Calendar size={18} /> Брондау
             </button>

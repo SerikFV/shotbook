@@ -66,6 +66,19 @@ class ChangePasswordRequest(BaseModel):
 # ─── Көмекші функция ─────────────────────────────────────────────────
 
 def _build_user_response(user: models.User) -> dict:
+    profile = None
+    if user.profile:
+        profile = {
+            "bio": user.profile.bio,
+            "experience": user.profile.experience,
+            "hourly_price": user.profile.hourly_price,
+            "rating": user.profile.rating,
+            "total_reviews": user.profile.total_reviews,
+            "specializations": user.profile.specializations,
+            "portfolio_urls": user.profile.portfolio_urls,
+            "social_links": user.profile.social_links,
+            "has_google_calendar": bool(user.profile.google_credentials),
+        }
     return {
         "id": user.id,
         "username": user.username,
@@ -74,7 +87,9 @@ def _build_user_response(user: models.User) -> dict:
         "city": user.city,
         "avatar": user.avatar,
         "is_email_verified": user.is_email_verified,
+        "profile": profile,
     }
+
 
 def _create_verification(db: Session, user_id: int, purpose: str) -> str:
     """Ескі кодтарды жойып, жаңа код жасайды"""

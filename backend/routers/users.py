@@ -259,8 +259,9 @@ async def delete_portfolio_image(
     current_user.profile.portfolio_urls = '\n'.join(urls)
     db.commit()
 
-    if url.startswith("/uploads/portfolio_"):
-        file_path = url.lstrip("/")
+    clean_url = url.split('?')[0]
+    if clean_url.startswith("/uploads/portfolio_"):
+        file_path = clean_url.lstrip("/")
         if os.path.exists(file_path):
             os.remove(file_path)
 

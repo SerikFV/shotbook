@@ -39,10 +39,11 @@ export default function LoginPage() {
         <h2 className="auth-title">{t('login')}</h2>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="field">
-            <label>{t('email_or_username')}</label>
+            <label>{t('email')}</label>
             <input
               className="input"
-              placeholder={t('email_or_username')}
+              type="email"
+              placeholder={t('email')}
               value={form.login}
               onChange={e => setForm({...form, login: e.target.value})}
               required

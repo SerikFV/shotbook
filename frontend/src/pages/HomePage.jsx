@@ -120,7 +120,6 @@ export default function HomePage() {
 
               {user ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <Link to={user.role === 'client' ? '/mobilographers' : '/bookings'} className="btn-outline" style={{ padding: '8px 16px' }}>{t('nav_dashboard')}</Link>
                   <div style={{ position: 'relative' }} ref={menuRef}>
                     <button onClick={() => setShowMenu(!showMenu)} style={{
                       display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.05)',
@@ -139,6 +138,13 @@ export default function HomePage() {
                         borderRadius: 16, padding: 8, minWidth: 160, zIndex: 100,
                         boxShadow: '0 8px 32px rgba(0,0,0,0.8)'
                       }}>
+                        <Link to="/profile" style={{
+                          display: 'block', textDecoration: 'none', padding: '10px 16px',
+                          color: 'white', fontSize: 14, borderRadius: 8, fontWeight: 500,
+                          cursor: 'pointer', marginBottom: 4
+                        }} onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background='none'} onClick={() => setShowMenu(false)}>
+                          Профиль
+                        </Link>
                         <button onClick={() => { logout(); setShowMenu(false) }} style={{
                           width: '100%', textAlign: 'left', padding: '10px 16px',
                           background: 'none', border: 'none', color: '#ef4444',
