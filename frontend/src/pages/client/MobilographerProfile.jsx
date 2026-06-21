@@ -277,7 +277,7 @@ export default function MobilographerProfile() {
     { key: 'portfolio', label: t('tab_portfolio') },
     { key: 'bio', label: t('bio') },
     { key: 'calendar', label: t('tab_calendar') },
-    ...(reviews.length > 0 ? [{ key: 'reviews', label: `${t('tab_reviews')} (${reviews.length})` }] : []),
+    { key: 'reviews', label: `${t('tab_reviews')} (${reviews.length})` },
   ]
 
   return (
@@ -683,45 +683,52 @@ export default function MobilographerProfile() {
         )}
 
         {/* ── Пікірлер таб ── */}
-        {activeTab === 'reviews' && reviews.length > 0 && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20 }}>
-            {reviews.map(r => (
-              <div key={r.id} className="card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', overflow: 'hidden' }}>
-                <Quote size={100} color="var(--border)" style={{ position: 'absolute', top: -15, right: -15, opacity: 0.3, transform: 'rotate(10deg)' }} />
-                
-                {r.comment ? (
-                  <p style={{ fontSize: 15, color: 'var(--text)', lineHeight: 1.6, fontStyle: 'italic', zIndex: 1, flex: 1 }}>
-                    "{r.comment}"
-                  </p>
-                ) : (
-                  <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.6, fontStyle: 'italic', zIndex: 1, flex: 1 }}>
-                    Пікір мәтіні жоқ...
-                  </p>
-                )}
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--border)', zIndex: 1 }}>
-                  <div style={{
-                    width: 44, height: 44, borderRadius: '50%', background: 'var(--accent-gradient)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 18, fontWeight: 700, color: 'white', flexShrink: 0,
-                    boxShadow: '0 4px 12px rgba(79, 142, 247, 0.4)'
-                  }}>{(r.client || '?')[0].toUpperCase()}</div>
+        {activeTab === 'reviews' && (
+          reviews.length > 0 ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20 }}>
+              {reviews.map(r => (
+                <div key={r.id} className="card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', overflow: 'hidden' }}>
+                  <Quote size={100} color="var(--border)" style={{ position: 'absolute', top: -15, right: -15, opacity: 0.3, transform: 'rotate(10deg)' }} />
                   
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)' }}>{r.client}</div>
-                    <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-                      {new Date(r.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
-                    </span>
-                  </div>
+                  {r.comment ? (
+                    <p style={{ fontSize: 15, color: 'var(--text)', lineHeight: 1.6, fontStyle: 'italic', zIndex: 1, flex: 1 }}>
+                      "{r.comment}"
+                    </p>
+                  ) : (
+                    <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.6, fontStyle: 'italic', zIndex: 1, flex: 1 }}>
+                      Пікір мәтіні жоқ...
+                    </p>
+                  )}
 
-                  <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(245, 158, 11, 0.1)', padding: '6px 10px', borderRadius: 20, border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-                    <Star size={14} fill="#f59e0b" color="#f59e0b" />
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#f59e0b', marginLeft: 6 }}>{r.rating}.0</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--border)', zIndex: 1 }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: '50%', background: 'var(--accent-gradient)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 18, fontWeight: 700, color: 'white', flexShrink: 0,
+                      boxShadow: '0 4px 12px rgba(79, 142, 247, 0.4)'
+                    }}>{(r.client || '?')[0].toUpperCase()}</div>
+                    
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)' }}>{r.client}</div>
+                      <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+                        {new Date(r.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(245, 158, 11, 0.1)', padding: '6px 10px', borderRadius: 20, border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                      <Star size={14} fill="#f59e0b" color="#f59e0b" />
+                      <span style={{ fontSize: 13, fontWeight: 700, color: '#f59e0b', marginLeft: 6 }}>{r.rating}.0</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '40px 24px', color: 'var(--text-secondary)', background: 'var(--card)', borderRadius: 16, border: '1px solid var(--border)' }}>
+              <Star size={40} color="var(--text-secondary)" style={{ margin: '0 auto 12px', display: 'block', opacity: 0.5 }} />
+              <p style={{ fontSize: 15, fontWeight: 500 }}>{t('no_reviews_yet')}</p>
+            </div>
+          )
         )}
       </div>
 
